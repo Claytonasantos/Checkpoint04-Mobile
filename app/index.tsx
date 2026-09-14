@@ -3,12 +3,10 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
-  ActivityIndicator,
 } from "react-native";
 
 import { router } from "expo-router";
@@ -18,6 +16,9 @@ import {
 } from "firebase/auth";
 
 import { auth } from "../services/firebaseConfig";
+import { cores } from "../constants/cores";
+import Campo from "../components/Campo";
+import Botao from "../components/Botao";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -75,72 +76,68 @@ export default function Login() {
           : undefined
       }
     >
-      <View style={styles.card}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.card}>
 
-        <Text style={styles.titulo}>
-          CP4 Mobile
-        </Text>
+          <View style={styles.logo}>
+            <Text style={styles.logoTexto}>CP4</Text>
+          </View>
 
-        <Text style={styles.subtitulo}>
-          Acesse sua conta
-        </Text>
+          <Text style={styles.titulo}>
+            Boas-vindas de volta!
+          </Text>
 
-        <Text style={styles.label}>
-          E-mail
-        </Text>
+          <Text style={styles.subtitulo}>
+            Estamos muito animados em te ver novamente!
+          </Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Digite seu e-mail"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          value={email}
-          onChangeText={setEmail}
-        />
+          <Campo
+            label="E-mail"
+            obrigatorio
+            placeholder="Digite seu e-mail"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
 
-        <Text style={styles.label}>
-          Senha
-        </Text>
+          <Campo
+            label="Senha"
+            obrigatorio
+            placeholder="Digite sua senha"
+            secureTextEntry
+            value={senha}
+            onChangeText={setSenha}
+          />
 
-        <TextInput
-          style={styles.input}
-          placeholder="Digite sua senha"
-          secureTextEntry
-          value={senha}
-          onChangeText={setSenha}
-        />
+          <Text
+            style={[styles.link, styles.esqueci]}
+            onPress={() => router.push("/recuperar")}
+          >
+            Esqueceu sua senha?
+          </Text>
 
-        <TouchableOpacity
-          style={styles.botao}
-          onPress={fazerLogin}
-          disabled={carregando}
-        >
-          {carregando ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.textoBotao}>
-              ENTRAR
+          <Botao
+            titulo="Entrar"
+            onPress={fazerLogin}
+            carregando={carregando}
+          />
+
+          <Text style={styles.rodape}>
+            Precisando de uma conta?{" "}
+            <Text
+              style={styles.link}
+              onPress={() => router.push("/cadastro")}
+            >
+              Registre-se
             </Text>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => router.push("/recuperar")}
-        >
-          <Text style={styles.link}>
-            Esqueci minha senha
           </Text>
-        </TouchableOpacity>
 
-        <TouchableOpacity
-          onPress={() => router.push("/cadastro")}
-        >
-          <Text style={styles.link}>
-            Ainda não tenho uma conta
-          </Text>
-        </TouchableOpacity>
-
-      </View>
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -148,61 +145,70 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: cores.fundo,
+  },
+
+  scroll: {
+    flexGrow: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f2f2f2",
   },
 
   card: {
-    backgroundColor: "#fff",
-    padding: 25,
-    borderRadius: 12,
+    backgroundColor: cores.card,
+    padding: 24,
+    borderRadius: 8,
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+  },
+
+  logo: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: cores.primaria,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginBottom: 16,
+  },
+
+  logoTexto: {
+    color: "#fff",
+    fontSize: 20,
+    fontWeight: "800",
   },
 
   titulo: {
-    fontSize: 30,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "600",
     textAlign: "center",
-    marginBottom: 5,
+    color: cores.texto,
+    marginBottom: 8,
   },
 
   subtitulo: {
     textAlign: "center",
-    color: "#666",
-    marginBottom: 30,
-  },
-
-  label: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 18,
-  },
-
-  botao: {
-    backgroundColor: "#2563eb",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 15,
-  },
-
-  textoBotao: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+    color: cores.textoSecundario,
+    fontSize: 15,
+    marginBottom: 24,
   },
 
   link: {
-    textAlign: "center",
-    color: "#2563eb",
+    color: cores.link,
+    fontSize: 14,
+    fontWeight: "500",
+  },
+
+  esqueci: {
+    marginTop: -12,
+    marginBottom: 20,
+  },
+
+  rodape: {
+    color: cores.textoApagado,
+    fontSize: 14,
     marginTop: 12,
   },
 });

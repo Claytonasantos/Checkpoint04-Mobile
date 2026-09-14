@@ -4,7 +4,6 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
   ActivityIndicator,
 } from "react-native";
@@ -18,6 +17,8 @@ import {
 } from "firebase/auth";
 
 import { auth } from "../services/firebaseConfig";
+import { cores } from "../constants/cores";
+import Botao from "../components/Botao";
 
 export default function Home() {
 
@@ -123,7 +124,7 @@ export default function Home() {
 
     return (
       <View style={styles.carregando}>
-        <ActivityIndicator size="large" />
+        <ActivityIndicator size="large" color={cores.primaria} />
         <Text style={styles.textoCarregando}>
           Carregando...
         </Text>
@@ -131,56 +132,70 @@ export default function Home() {
     );
   }
 
+  const nome = usuario?.displayName || "Não informado";
+  const inicial = (usuario?.displayName || usuario?.email || "?")
+    .charAt(0)
+    .toUpperCase();
+
   return (
     <View style={styles.container}>
 
       <View style={styles.card}>
 
-        <Text style={styles.titulo}>
-          Minha conta
-        </Text>
+        <View style={styles.banner} />
 
-        <Text style={styles.saude}>
-          Você está autenticado!
-        </Text>
-
-        <View style={styles.info}>
-
-          <Text style={styles.label}>
-            Nome
-          </Text>
-
-          <Text style={styles.valor}>
-            {usuario?.displayName || "Não informado"}
-          </Text>
-
-          <Text style={styles.label}>
-            E-mail
-          </Text>
-
-          <Text style={styles.valor}>
-            {usuario?.email}
-          </Text>
-
+        <View style={styles.avatarBorda}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarTexto}>{inicial}</Text>
+          </View>
+          <View style={styles.status} />
         </View>
 
-        <TouchableOpacity
-          style={styles.botaoLogout}
-          onPress={fazerLogout}
-        >
-          <Text style={styles.textoBotao}>
-            SAIR DA CONTA
-          </Text>
-        </TouchableOpacity>
+        <View style={styles.conteudo}>
 
-        <TouchableOpacity
-          style={styles.botaoExcluir}
-          onPress={confirmarExclusao}
-        >
-          <Text style={styles.textoBotaoExcluir}>
-            EXCLUIR CONTA
+          <Text style={styles.nome}>
+            {nome}
           </Text>
-        </TouchableOpacity>
+
+          <Text style={styles.autenticado}>
+            ● Você está autenticado!
+          </Text>
+
+          <View style={styles.info}>
+
+            <Text style={styles.label}>
+              NOME
+            </Text>
+
+            <Text style={styles.valor}>
+              {nome}
+            </Text>
+
+            <View style={styles.divisor} />
+
+            <Text style={styles.label}>
+              E-MAIL
+            </Text>
+
+            <Text style={styles.valor}>
+              {usuario?.email}
+            </Text>
+
+          </View>
+
+          <Botao
+            titulo="Sair da conta"
+            onPress={fazerLogout}
+            style={styles.botaoLogout}
+          />
+
+          <Botao
+            titulo="Excluir conta"
+            variante="contornoPerigo"
+            onPress={confirmarExclusao}
+          />
+
+        </View>
 
       </View>
 
@@ -188,83 +203,126 @@ export default function Home() {
   );
 }
 
+const TAMANHO_AVATAR = 88;
+
 const styles = StyleSheet.create({
 
   container: {
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: cores.fundo,
   },
 
   card: {
-    backgroundColor: "#fff",
-    padding: 25,
+    backgroundColor: cores.card,
+    borderRadius: 8,
+    overflow: "hidden",
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+  },
+
+  banner: {
+    height: 100,
+    backgroundColor: cores.primaria,
+  },
+
+  avatarBorda: {
+    position: "absolute",
+    top: 100 - TAMANHO_AVATAR / 2 - 6,
+    left: 16,
+    padding: 6,
+    borderRadius: TAMANHO_AVATAR / 2 + 6,
+    backgroundColor: cores.card,
+  },
+
+  avatar: {
+    width: TAMANHO_AVATAR,
+    height: TAMANHO_AVATAR,
+    borderRadius: TAMANHO_AVATAR / 2,
+    backgroundColor: cores.primariaPressionada,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  avatarTexto: {
+    color: "#fff",
+    fontSize: 36,
+    fontWeight: "700",
+  },
+
+  status: {
+    position: "absolute",
+    right: 6,
+    bottom: 6,
+    width: 24,
+    height: 24,
     borderRadius: 12,
+    backgroundColor: cores.sucesso,
+    borderWidth: 4,
+    borderColor: cores.card,
   },
 
-  titulo: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 10,
+  conteudo: {
+    paddingTop: TAMANHO_AVATAR / 2 + 12,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
 
-  saude: {
-    textAlign: "center",
-    color: "#16a34a",
-    marginBottom: 30,
+  nome: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: cores.texto,
+  },
+
+  autenticado: {
+    color: cores.sucesso,
+    fontSize: 14,
+    marginTop: 4,
+    marginBottom: 16,
   },
 
   info: {
-    marginBottom: 30,
+    backgroundColor: cores.input,
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 20,
   },
 
   label: {
+    fontSize: 12,
     fontWeight: "bold",
-    marginTop: 15,
-    marginBottom: 5,
+    letterSpacing: 0.5,
+    color: cores.textoSecundario,
+    marginBottom: 4,
   },
 
   valor: {
     fontSize: 16,
-    color: "#555",
+    color: cores.texto,
+  },
+
+  divisor: {
+    height: 1,
+    backgroundColor: cores.divisor,
+    marginVertical: 12,
   },
 
   botaoLogout: {
-    backgroundColor: "#2563eb",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginBottom: 15,
-  },
-
-  textoBotao: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-
-  botaoExcluir: {
-    borderWidth: 1,
-    borderColor: "#dc2626",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-
-  textoBotaoExcluir: {
-    color: "#dc2626",
-    fontWeight: "bold",
+    marginBottom: 12,
   },
 
   carregando: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: cores.fundo,
   },
 
   textoCarregando: {
     marginTop: 10,
+    color: cores.textoSecundario,
   },
 
 });

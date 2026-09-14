@@ -2,12 +2,11 @@ import React, { useState } from "react";
 
 import {
   Alert,
+  KeyboardAvoidingView,
+  Platform,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
-  ActivityIndicator,
 } from "react-native";
 
 import { router } from "expo-router";
@@ -17,6 +16,9 @@ import {
 } from "firebase/auth";
 
 import { auth } from "../services/firebaseConfig";
+import { cores } from "../constants/cores";
+import Campo from "../components/Campo";
+import Botao from "../components/Botao";
 
 export default function RecuperarSenha() {
 
@@ -79,25 +81,33 @@ export default function RecuperarSenha() {
   }
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={
+        Platform.OS === "ios"
+          ? "padding"
+          : undefined
+      }
+    >
 
       <View style={styles.card}>
 
+        <View style={styles.icone}>
+          <Text style={styles.iconeTexto}>?</Text>
+        </View>
+
         <Text style={styles.titulo}>
-          Recuperar senha
+          Esqueceu a senha?
         </Text>
 
         <Text style={styles.descricao}>
-          Informe seu e-mail para receber as instruções
-          de recuperação da senha.
+          Sem problemas! Informe seu e-mail e enviaremos
+          as instruções para redefinir sua senha.
         </Text>
 
-        <Text style={styles.label}>
-          E-mail
-        </Text>
-
-        <TextInput
-          style={styles.input}
+        <Campo
+          label="E-mail"
+          obrigatorio
           placeholder="Digite seu e-mail"
           keyboardType="email-address"
           autoCapitalize="none"
@@ -105,33 +115,22 @@ export default function RecuperarSenha() {
           onChangeText={setEmail}
         />
 
-        <TouchableOpacity
-          style={styles.botao}
+        <Botao
+          titulo="Enviar link"
           onPress={recuperarSenha}
-          disabled={carregando}
-        >
+          carregando={carregando}
+        />
 
-          {carregando ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.textoBotao}>
-              ENVIAR LINK
-            </Text>
-          )}
-
-        </TouchableOpacity>
-
-        <TouchableOpacity
+        <Text
+          style={styles.link}
           onPress={() => router.replace("/")}
         >
-          <Text style={styles.link}>
-            Voltar para o login
-          </Text>
-        </TouchableOpacity>
+          Voltar para o login
+        </Text>
 
       </View>
 
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -141,58 +140,56 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f2f2f2",
+    backgroundColor: cores.fundo,
   },
 
   card: {
-    backgroundColor: "#fff",
-    padding: 25,
-    borderRadius: 12,
+    backgroundColor: cores.card,
+    padding: 24,
+    borderRadius: 8,
+    width: "100%",
+    maxWidth: 480,
+    alignSelf: "center",
+  },
+
+  icone: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: "rgba(26, 188, 156, 0.15)",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginBottom: 16,
+  },
+
+  iconeTexto: {
+    color: cores.primaria,
+    fontSize: 30,
+    fontWeight: "800",
   },
 
   titulo: {
-    fontSize: 28,
-    fontWeight: "bold",
+    fontSize: 24,
+    fontWeight: "600",
     textAlign: "center",
-    marginBottom: 15,
+    color: cores.texto,
+    marginBottom: 8,
   },
 
   descricao: {
     textAlign: "center",
-    color: "#666",
-    marginBottom: 25,
-    lineHeight: 20,
-  },
-
-  label: {
-    fontWeight: "bold",
-    marginBottom: 5,
-  },
-
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 20,
-  },
-
-  botao: {
-    backgroundColor: "#2563eb",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-
-  textoBotao: {
-    color: "#fff",
-    fontWeight: "bold",
+    color: cores.textoSecundario,
+    fontSize: 15,
+    marginBottom: 24,
+    lineHeight: 21,
   },
 
   link: {
-    textAlign: "center",
-    color: "#2563eb",
-    marginTop: 20,
+    color: cores.link,
+    fontSize: 14,
+    fontWeight: "500",
+    marginTop: 16,
   },
 
 });
