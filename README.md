@@ -1,56 +1,65 @@
-# Welcome to your Expo app 👋
+# CP4 Mobile
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile desenvolvido com [Expo](https://expo.dev) e [Expo Router](https://docs.expo.dev/router/introduction), com autenticação via [Firebase](https://firebase.google.com/).
 
-## Get started
+## Vídeo de demonstração
 
-1. Install dependencies
+[Assista no YouTube](https://youtube.com/shorts/sv6uX3HzGqs?feature=share)
+
+## Funcionalidades
+
+- Login com e-mail e senha
+- Cadastro de novo usuário
+- Recuperação de senha
+- Tela autenticada (Home) com logout e exclusão de conta
+
+## Tecnologias
+
+- [Expo](https://expo.dev) ~57
+- [Expo Router](https://docs.expo.dev/router/introduction) (rotas baseadas em arquivos)
+- [React Native](https://reactnative.dev)
+- [Firebase Authentication](https://firebase.google.com/docs/auth)
+- TypeScript
+
+## Estrutura do projeto
+
+```
+app/
+  _layout.tsx      # layout raiz das rotas
+  index.tsx         # tela de login
+  cadastro.tsx       # tela de cadastro
+  recuperar.tsx       # recuperação de senha
+  home.tsx            # tela autenticada
+components/
+  Campo.tsx           # componente de input reutilizável
+  Botao.tsx           # componente de botão reutilizável
+constants/
+  cores.ts            # paleta de cores do tema
+services/
+  firebaseConfig.ts   # configuração do Firebase
+```
+
+## Como rodar o projeto
+
+1. Instale as dependências
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. Inicie o projeto
 
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. No terminal, escaneie o QR code com o app [Expo Go](https://expo.dev/go) (Android/iOS), ou escolha rodar em emulador Android, simulador iOS ou navegador.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Requisitos
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Node.js
+- App Expo Go instalado no celular (para testar via QR code)
 
-## Get a fresh project
+## Licença
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Este projeto está sob a licença presente no arquivo [LICENSE](./LICENSE).
