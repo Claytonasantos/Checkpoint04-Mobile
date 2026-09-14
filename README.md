@@ -2,6 +2,11 @@
 
 Aplicativo mobile desenvolvido com [Expo](https://expo.dev) e [Expo Router](https://docs.expo.dev/router/introduction), com autenticação via [Firebase](https://firebase.google.com/).
 
+## Integrantes
+
+- Clayton Alves dos Santos — RM: 562285
+- Guilherme Sola Garcia — RM: 563674
+
 ## Vídeo de demonstração
 
 [Assista no YouTube](https://youtube.com/shorts/sv6uX3HzGqs?feature=share)
