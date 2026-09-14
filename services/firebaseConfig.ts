@@ -1,9 +1,11 @@
 import { initializeApp } from "firebase/app";
 import {
+  getAuth,
   initializeAuth,
   getReactNativePersistence,
 } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Platform } from "react-native";
 
 const firebaseConfig = {
   apiKey: "AIzaSyC-OBc7AaN7kijaQGEacV4wb1ffRNALPTo",
@@ -16,6 +18,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(AsyncStorage),
-});
+// No web o Firebase já persiste a sessão sozinho;
+// getReactNativePersistence só existe no build nativo
+export const auth =
+  Platform.OS === "web"
+    ? getAuth(app)
+    : initializeAuth(app, {
+        persistence: getReactNativePersistence(AsyncStorage),
+      });
