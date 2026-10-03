@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import {
-  Alert,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 
 import { router } from "expo-router";
@@ -13,74 +13,59 @@ import { router } from "expo-router";
 import {
   deleteUser,
   signOut,
-  User,
 } from "firebase/auth";
 
 import { auth } from "../services/firebaseConfig";
 import { cores } from "../constants/cores";
 import Botao from "../components/Botao";
+import { useAuth } from "../contexts/AuthContext";
+import { confirmar, mostrarMensagem } from "../utils/mensagens";
 
+// Área "Minha conta": dados do usuário vindos do Firebase Authentication
 export default function Home() {
 
-  const [usuario, setUsuario] = useState<User | null>(null);
-  const [carregando, setCarregando] = useState(true);
+  const { nome: nomeUsuario, email } = useAuth();
+  const [carregando, setCarregando] = useState(false);
 
-  useEffect(() => {
-
-    const usuarioAtual = auth.currentUser;
-
-    if (!usuarioAtual) {
-      router.replace("/");
-      return;
-    }
-
-    setUsuario(usuarioAtual);
-    setCarregando(false);
-
-  }, []);
-
+  // Ao sair ou excluir a conta, o layout leva o usuário
+  // de volta para o login automaticamente
   async function fazerLogout() {
 
     try {
 
       await signOut(auth);
 
-      router.replace("/");
-
     } catch (error) {
 
       console.log(error);
 
-      Alert.alert(
+      mostrarMensagem(
         "Erro",
         "Não foi possível sair da conta."
       );
     }
   }
 
-  function confirmarExclusao() {
+  async function confirmarExclusao() {
 
-    Alert.alert(
+    const confirmado = await confirmar(
       "Excluir conta",
       "Tem certeza que deseja excluir sua conta? Essa ação não poderá ser desfeita.",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Excluir",
-          style: "destructive",
-          onPress: excluirConta,
-        },
-      ]
+      "Excluir"
     );
+
+    if (confirmado) {
+      excluirConta();
+    }
   }
 
   async function excluirConta() {
 
     if (!auth.currentUser) {
-      router.replace("/");
+      mostrarMensagem(
+        "Sessão encerrada",
+        "Você não está autenticado. Faça login novamente."
+      );
       return;
     }
 
@@ -90,12 +75,10 @@ export default function Home() {
 
       await deleteUser(auth.currentUser);
 
-      Alert.alert(
+      mostrarMensagem(
         "Conta excluída",
         "Sua conta foi excluída com sucesso."
       );
-
-      router.replace("/");
 
     } catch (error: any) {
 
@@ -103,14 +86,21 @@ export default function Home() {
 
       if (error.code === "auth/requires-recent-login") {
 
-        Alert.alert(
+        mostrarMensagem(
           "Login necessário",
           "Por segurança, faça login novamente antes de excluir sua conta."
         );
 
+      } else if (error.code === "auth/network-request-failed") {
+
+        mostrarMensagem(
+          "Erro de conexão",
+          "Não foi possível conectar ao servidor. Verifique sua conexão com a internet."
+        );
+
       } else {
 
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Não foi possível excluir sua conta."
         );
@@ -132,13 +122,16 @@ export default function Home() {
     );
   }
 
-  const nome = usuario?.displayName || "Não informado";
-  const inicial = (usuario?.displayName || usuario?.email || "?")
+  const nome = nomeUsuario || "Não informado";
+  const inicial = (nomeUsuario || email || "?")
     .charAt(0)
     .toUpperCase();
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.tela}
+      contentContainerStyle={styles.container}
+    >
 
       <View style={styles.card}>
 
@@ -178,13 +171,20 @@ export default function Home() {
             </Text>
 
             <Text style={styles.valor}>
-              {usuario?.email}
+              {email}
             </Text>
 
           </View>
 
           <Botao
+            titulo="Meus registros"
+            onPress={() => router.push("/registros")}
+            style={styles.botaoLogout}
+          />
+
+          <Botao
             titulo="Sair da conta"
+            variante="perigo"
             onPress={fazerLogout}
             style={styles.botaoLogout}
           />
@@ -199,7 +199,7 @@ export default function Home() {
 
       </View>
 
-    </View>
+    </ScrollView>
   );
 }
 
@@ -207,8 +207,13 @@ const TAMANHO_AVATAR = 88;
 
 const styles = StyleSheet.create({
 
-  container: {
+  tela: {
     flex: 1,
+    backgroundColor: cores.fundo,
+  },
+
+  container: {
+    flexGrow: 1,
     justifyContent: "center",
     padding: 20,
     backgroundColor: cores.fundo,
