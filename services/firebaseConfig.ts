@@ -4,6 +4,7 @@ import {
   initializeAuth,
   getReactNativePersistence,
 } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 
@@ -26,3 +27,6 @@ export const auth =
     : initializeAuth(app, {
         persistence: getReactNativePersistence(AsyncStorage),
       });
+
+// Banco de dados (Cloud Firestore) usando o mesmo app do Firebase
+export const db = getFirestore(app);
