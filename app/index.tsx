@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -19,6 +18,7 @@ import { auth } from "../services/firebaseConfig";
 import { cores } from "../constants/cores";
 import Campo from "../components/Campo";
 import Botao from "../components/Botao";
+import { mostrarMensagem } from "../utils/mensagens";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -27,7 +27,7 @@ export default function Login() {
 
   async function fazerLogin() {
     if (!email || !senha) {
-      Alert.alert("Atenção", "Preencha o e-mail e a senha.");
+      mostrarMensagem("Atenção", "Preencha o e-mail e a senha.");
       return;
     }
 
@@ -40,23 +40,29 @@ export default function Login() {
         senha
       );
 
-      router.replace("/home");
+      // O redirecionamento para a home é feito pelo layout
+      // assim que o Firebase confirma o usuário autenticado
 
     } catch (error: any) {
       console.log(error);
 
       if (error.code === "auth/invalid-credential") {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "E-mail ou senha incorretos."
         );
       } else if (error.code === "auth/invalid-email") {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Digite um e-mail válido."
         );
+      } else if (error.code === "auth/network-request-failed") {
+        mostrarMensagem(
+          "Erro de conexão",
+          "Não foi possível conectar ao servidor. Verifique sua conexão com a internet."
+        );
       } else {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Não foi possível realizar o login."
         );

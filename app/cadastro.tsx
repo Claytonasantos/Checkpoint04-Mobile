@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -21,6 +20,8 @@ import { auth } from "../services/firebaseConfig";
 import { cores } from "../constants/cores";
 import Campo from "../components/Campo";
 import Botao from "../components/Botao";
+import { mostrarMensagem } from "../utils/mensagens";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Cadastro() {
   const [nome, setNome] = useState("");
@@ -30,10 +31,12 @@ export default function Cadastro() {
 
   const [carregando, setCarregando] = useState(false);
 
+  const { atualizarUsuario } = useAuth();
+
   async function cadastrar() {
 
-    if (!nome || !email || !senha || !confirmarSenha) {
-      Alert.alert(
+    if (!nome.trim() || !email.trim() || !senha || !confirmarSenha) {
+      mostrarMensagem(
         "Atenção",
         "Preencha todos os campos."
       );
@@ -41,7 +44,7 @@ export default function Cadastro() {
     }
 
     if (!email.includes("@")) {
-      Alert.alert(
+      mostrarMensagem(
         "Atenção",
         "Digite um e-mail válido."
       );
@@ -49,7 +52,7 @@ export default function Cadastro() {
     }
 
     if (senha.length < 6) {
-      Alert.alert(
+      mostrarMensagem(
         "Atenção",
         "A senha deve possuir pelo menos 6 caracteres."
       );
@@ -57,7 +60,7 @@ export default function Cadastro() {
     }
 
     if (senha !== confirmarSenha) {
-      Alert.alert(
+      mostrarMensagem(
         "Atenção",
         "As senhas não são iguais."
       );
@@ -78,15 +81,13 @@ export default function Cadastro() {
         displayName: nome.trim(),
       });
 
-      Alert.alert(
+      // Atualiza o nome exibido no perfil; o layout já leva
+      // o usuário para a home ao detectar a nova sessão
+      atualizarUsuario();
+
+      mostrarMensagem(
         "Sucesso",
-        "Conta criada com sucesso!",
-        [
-          {
-            text: "OK",
-            onPress: () => router.replace("/home"),
-          },
-        ]
+        "Conta criada com sucesso!"
       );
 
     } catch (error: any) {
@@ -94,22 +95,27 @@ export default function Cadastro() {
       console.log(error);
 
       if (error.code === "auth/email-already-in-use") {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Este e-mail já está cadastrado."
         );
       } else if (error.code === "auth/invalid-email") {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Digite um e-mail válido."
         );
       } else if (error.code === "auth/weak-password") {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "A senha é muito fraca."
         );
+      } else if (error.code === "auth/network-request-failed") {
+        mostrarMensagem(
+          "Erro de conexão",
+          "Não foi possível conectar ao servidor. Verifique sua conexão com a internet."
+        );
       } else {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Não foi possível criar a conta."
         );

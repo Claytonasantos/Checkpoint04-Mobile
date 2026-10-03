@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import {
-  Alert,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -19,6 +18,7 @@ import { auth } from "../services/firebaseConfig";
 import { cores } from "../constants/cores";
 import Campo from "../components/Campo";
 import Botao from "../components/Botao";
+import { mostrarMensagem } from "../utils/mensagens";
 
 export default function RecuperarSenha() {
 
@@ -28,7 +28,7 @@ export default function RecuperarSenha() {
   async function recuperarSenha() {
 
     if (!email) {
-      Alert.alert(
+      mostrarMensagem(
         "Atenção",
         "Digite seu e-mail."
       );
@@ -36,7 +36,7 @@ export default function RecuperarSenha() {
     }
 
     if (!email.includes("@")) {
-      Alert.alert(
+      mostrarMensagem(
         "Atenção",
         "Digite um e-mail válido."
       );
@@ -52,7 +52,7 @@ export default function RecuperarSenha() {
         email.trim()
       );
 
-      Alert.alert(
+      mostrarMensagem(
         "Solicitação enviada",
         "Se o e-mail estiver cadastrado, você receberá as instruções para redefinir sua senha."
       );
@@ -64,12 +64,17 @@ export default function RecuperarSenha() {
       console.log(error);
 
       if (error.code === "auth/invalid-email") {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Digite um e-mail válido."
         );
+      } else if (error.code === "auth/network-request-failed") {
+        mostrarMensagem(
+          "Erro de conexão",
+          "Não foi possível conectar ao servidor. Verifique sua conexão com a internet."
+        );
       } else {
-        Alert.alert(
+        mostrarMensagem(
           "Erro",
           "Não foi possível solicitar a recuperação."
         );
