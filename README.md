@@ -30,7 +30,7 @@ O aplicativo permite que o usuário crie uma conta, faça login e gerencie seus 
 
 ## Vídeo de demonstração
 
-> _Link do vídeo da CP5: adicionar aqui_
+[Assista no YouTube](https://youtube.com/shorts/C2LqjjaNerE)
 
 ## Tecnologias utilizadas
 
