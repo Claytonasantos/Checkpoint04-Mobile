@@ -30,7 +30,7 @@ O aplicativo permite que o usuário crie uma conta, faça login e gerencie seus 
 
 ## Vídeo de demonstração
 
-[Assista no YouTube](https://youtube.com/shorts/C2LqjjaNerE)
+[Assista no YouTube](https://youtu.be/iXCytVafwBw)
 
 ## Tecnologias utilizadas
 
